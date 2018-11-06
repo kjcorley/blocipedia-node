@@ -1,9 +1,36 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
     <head>
-        <title>Welcome to Blocipedia</title>
+        <% include ./partials/head.ejs %>
     </head>
     <body>
-        <h1>Welcome to Bloccipedia</h1>
+        <% include ./partials/navbar.ejs %>
+        <main class="container">
+            <% include ./partials/messages.ejs %>
+            <header class="jumbotron my-4">
+                <h1 class="display-3">Welcome to Blocipedia</h1>
+                <p class="lead">An application to collaborate on wikis.</p>
+                <a href="/users/signup" class="btn btn-primary btn-lg">Sign up</a>
+            </header>
+            <section class="row text-center">
+                
+                <section class="col-lg-4">
+                    <h4 class="card-title">Wikis</h4>
+                    <p class="card-text"></p>
+                </section>
+                
+                <section class="col-lg-4">
+                    <h4 class="card-title">Collaborate</h4>
+                    <p class="card-text"></p>
+                </section>
+
+                <section class="col-lg-4">
+                    <h4 class="card-title">Share</h4>
+                    <p class="card-text"></p>
+                </section>
+
+            </section>
+        </main>
+        <% include ./partials/baseScripts.ejs %>
     </body>
 </html>
