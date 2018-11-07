@@ -8,7 +8,6 @@ module.exports = {
        }
 
        const errors = req.validationErrors();
-       console.log(errors);
 
        if(errors){
            req.flash("error", errors);
@@ -16,5 +15,5 @@ module.exports = {
        } else {
            return next();
        }
-   } 
+   }
 }

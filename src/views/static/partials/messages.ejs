@@ -6,9 +6,13 @@
         <% if(messages.error) { %>
             Validation errors:
             <ul>
-            <% messages.error.forEach((err) => { %>
-                <li><%=`${err.param} ${err.msg}` %></li>
-            <% }) %>
+            <% if(messages.error.length > 1) { %>
+                <% messages.error.forEach((err) => { %>
+                    <li><%=`${err.param} ${err.msg}` %></li>
+                <% }) %>
+            <% } else { %>
+            <li><%=`${messages.error}` %></li>
+            <% } %>
             </ul>
         <% } else { %>
             <p><%= messages.notice %></p>

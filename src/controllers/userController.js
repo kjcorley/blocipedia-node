@@ -3,7 +3,7 @@ const passport = require("passport");
 const emailRelay = require("../email/helper.js");
 
 module.exports = {
-    show(req, res, next){
+    signUp(req, res, next){
         res.render("users/signup");
     },
     create(req, res, next){
@@ -26,5 +26,19 @@ module.exports = {
                 })
             }
         })
+    },
+    signInForm(req, res, next){
+        res.render("users/signin");
+    },
+    signIn(req, res, next){
+        passport.authenticate("local", {failureRedirect: '/', failureFlash: "Invalid username or password"})(req, res, () => {
+            req.flash("notice", "You've successfully signed in!");
+            res.redirect("/");
+        })
+    },
+    signOut(req, res, next){
+        req.logout();
+        req.flash("notice", "You have been successfully signed out!");
+        res.redirect("/");
     }
 }
