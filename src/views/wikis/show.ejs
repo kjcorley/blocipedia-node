@@ -8,8 +8,10 @@
         <main class="container">
             <%  include ../static/partials/messages.ejs %>
             <h1><%= wiki.title %></h1>
-            <% if((currentUser && currentUser.id == wiki.userId) || (currentUser && currentUser.isAdmin())) { %>
+            <% if(currentUser && !wiki.private) { %>
             <a href="/wikis/<%= wiki.id %>/edit" class="btn btn-primary">Edit</a>
+            <% } %>
+            <% if((currentUser && currentUser.id == wiki.userId) || (currentUser && currentUser.isAdmin())) { %>
             <form style="display: initial" action="/wikis/<%= wiki.id %>/destroy" method="POST">
                 <button type="submit" class="btn btn-danger">Delete</button>
             </form>

@@ -17,6 +17,10 @@ module.exports = class ApplicationPolicy {
         return this.user && (this.user.role == "premium");
     }
 
+    _isPublic() {
+        return this.record.private == false;
+    }
+
     new() {
         return this.user != null;
     }
@@ -30,7 +34,7 @@ module.exports = class ApplicationPolicy {
     }
 
     edit() {
-        return this.new() && this.record && (this._isOwner() || this._isAdmin());
+        return this.new() && this._isPublic();
     }
 
     update() {
@@ -38,6 +42,6 @@ module.exports = class ApplicationPolicy {
     }
 
     destroy() {
-        return this.update();
+        return this.new() && (this._isOwner() || this._isAdmin());
     }
 }
