@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <% include ../static/partials/head.ejs %>
+    </head>
+    <body>
+        <% include ../static/partials/navbar.ejs %>
+        <main class="container">
+            <% include ../static/partials/messages.ejs %>
+            <header class="jumbotron my-4">
+                <h1 class="display-3">You have a <%= currentUser.role %> account</h1>
+                <% if(currentUser && (currentUser.role == "standard")) { %>
+                <p class="lead">Get premium features by upgrading today!</p>
+                <% } %>
+            </header>
+            <section class="row text-center">
+                
+                <section class="col-lg-4 offset-1 card" style="background-color: #f7fcfc">
+                    <h3 class="card-title">Standard User</h3>
+                    <p class="card-text">Create Public Wikis</p>
+                    <p class="card-text">Edit Public Wikis</p>
+                    <% if(currentUser && (currentUser.role == "premium")) { %>
+                        <form style="display: initial" action="/users/downgrade" method="POST">
+                            <button type="submit" class="btn btn-warning">Downgrade</button>
+                        </form>
+                    <% } %>
+                </section>
+                
+                <section class="col-lg-4  offset-2 card" style="background-color: #adfffd">
+                    <h3 class="card-title">Premium User</h3>
+                    <p class="card-text">All standard features plus:</p>
+                    <p class="card-text">Create and edit privated Wikis</p>
+                    <p class="card-text">Add collaborators</p>
+                    <% if(currentUser && (currentUser.role == "standard")) { %>
+                        <% include ../static/partials/payment.ejs %>
+                    <% } %>
+                </section>
+
+            </section>
+        </main>
+        <% include ../static/partials/baseScripts.ejs %>
+    </body>
+</html>

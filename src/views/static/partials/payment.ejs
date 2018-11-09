@@ -1,0 +1,13 @@
+<form action="/users/upgrade" method="POST">
+  <script
+    src="https://checkout.stripe.com/checkout.js"
+    class="stripe-button"
+    data-key="<%= process.env.STRIPE_PK %>"
+    data-amount="1500"
+    data-name="Blocipedia"
+    data-description="Premium Upgrade"
+    data-image="https://stripe.com/img/documentation/checkout/marketplace.png"
+    data-locale="auto"
+    data-zip-code="true">
+  </script>
+</form>
