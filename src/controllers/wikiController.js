@@ -3,14 +3,24 @@ const Authorizer = require("../policies/application");
 
 module.exports = {
     index(req, res, next){
-        wikiQueries.getAllWikis((err, wikis) => {
-            if(err){
-                console.log(err);
-                res.redirect(500, '/')
-            } else {
-                res.render("wikis/wiki", {wikis});
-            }
-        })  
+        const authorized = new Authorizer(req.user).private();
+        if(authorized) {
+            wikiQueries.getAllWikis((err, wikis) => {
+                if(err){
+                    res.redirect(500, '/');
+                } else {
+                    res.render("wikis/wiki", {wikis});
+                }
+            })  
+        } else {
+            wikiQueries.getAllPublicWikis((err, wikis) => {
+                if(err){
+                    res.redirect(500, '/');
+                } else {
+                    res.render("wikis/wiki", {wikis});
+                }
+            })  
+        }
     },
     new(req, res, next){
         const authorized = new Authorizer(req.user).new();
@@ -22,12 +32,16 @@ module.exports = {
         }
     },
     create(req, res, next){
-        const authorized = new Authorizer(req.user).create();
-        if(authorized){
+        const authorized = new Authorizer(req.user);
+        if(authorized.create()){
+            let private = false;
+            if(authorized.private() && req.body.private == "private"){
+                private = true;
+            }
             let newWiki = {
                 title: req.body.title,
                 body: req.body.body,
-                private: req.body.private,
+                private: private,
                 userId: req.user.id
             }
             wikiQueries.createWiki(newWiki, (err, wiki) => {
@@ -43,16 +57,16 @@ module.exports = {
         }
     },
     show(req, res, next){
-        wikiQueries.getWiki(req.params.id, (err, wiki) => {
+        wikiQueries.getWiki(req, (err, wiki) => {
             if(err || wiki == null){
-                res.redirect(404, "/wikis");
+                res.redirect("/wikis");
             } else {
                 res.render("wikis/show", {wiki})
             }
         });
     },
     edit(req, res, next){
-        wikiQueries.getWiki(req.params.id, (err, wiki) => {
+        wikiQueries.getWiki(req, (err, wiki) => {
             if(err || wiki == null){
                 res.redirect(404, "/wikis")
             } else {
@@ -67,9 +81,9 @@ module.exports = {
         });
     },
     update(req, res, next){
-        wikiQueries.updateWiki(req, req.body, (err, wiki) => {
+        wikiQueries.updateWiki(req, (err, wiki) => {
             if(err || wiki == null) {
-                res.redirect(404, `/wikis/${req.params.id}/edit`);
+                res.redirect(`/wikis/${req.params.id}`);
             } else {
                 res.redirect(`/wikis/${req.params.id}`)
             }

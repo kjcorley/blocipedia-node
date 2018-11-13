@@ -8,7 +8,7 @@
         <main class="container">
             <%  include ../static/partials/messages.ejs %>
             <h1><%= wiki.title %></h1>
-            <% if(currentUser && !wiki.private) { %>
+            <% if(currentUser && (!wiki.private || (currentUser.isAdmin() || currentUser.isPremium()))) { %>
             <a href="/wikis/<%= wiki.id %>/edit" class="btn btn-primary">Edit</a>
             <% } %>
             <% if((currentUser && currentUser.id == wiki.userId) || (currentUser && currentUser.isAdmin())) { %>

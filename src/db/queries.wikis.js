@@ -11,6 +11,15 @@ module.exports = {
             callback(err);
         })
     },
+    getAllPublicWikis(callback){
+        return Wiki.findAll({where: {private: false}})
+        .then((wikis) => {
+            callback(null, wikis);
+        })
+        .catch((err) => {
+            callback(err);
+        })
+    },
     createWiki(newWiki, callback){
         return Wiki.create(newWiki)
         .then((wiki) => {
@@ -20,23 +29,37 @@ module.exports = {
             callback(err);
         })
     },
-    getWiki(id, callback){
-        return Wiki.findById(id)
+    getWiki(req, callback){
+        return Wiki.findById(req.params.id)
         .then((wiki) => {
-            callback(null, wiki);
+            const authorized = new Authorizer(req.user, wiki).show();
+            if (authorized) {
+                callback(null, wiki);
+            } else {
+                req.flash("notice", "You are not authorized to do that.");
+                callback("Forbidden");
+            }
         })
         .catch((err) => {
             callback(err);
         })
     },
-    updateWiki(req, updatedWiki, callback){
+    updateWiki(req, callback){
         return Wiki.findById(req.params.id)
         .then((wiki) => {
             if(!wiki){
-                return callback("Wiki not found!");
+                return callback("Wiki not found!");;
             }
-            const authorized = new Authorizer(req.user, wiki).update();
-            if(authorized){
+            let updatedWiki = {
+                title: req.body.title,
+                body: req.body.body,
+            };
+            const authorized = new Authorizer(req.user, wiki);
+            if(authorized.private() && req.body.private == "private") {
+                updatedWiki.private = true;
+            }
+
+            if(authorized.update()){
                 wiki.update(updatedWiki, {
                     fields: Object.keys(updatedWiki)
                 })
@@ -69,6 +92,15 @@ module.exports = {
                 req.flash("notice", "You are not authorized to do that.");
                 callback(401);
             }
+        })
+    },
+    downgradeWikis(userId, callback){
+        return Wiki.update({private: false}, {where: {userId}})
+        .then(() => {
+            callback(null);
+        })
+        .catch((err) => {
+            callback(err);
         })
     }
 }

@@ -30,11 +30,11 @@ module.exports = class ApplicationPolicy {
     }
 
     show() {
-        return true;
+        return this._isPublic() || this._isAdmin() || this._isPremium();
     }
 
     edit() {
-        return this.new() && this._isPublic();
+        return this.new() && (this._isPublic() || this.private());
     }
 
     update() {
@@ -43,5 +43,9 @@ module.exports = class ApplicationPolicy {
 
     destroy() {
         return this.new() && (this._isOwner() || this._isAdmin());
+    }
+
+    private() {
+        return this._isAdmin() || this._isPremium();
     }
 }

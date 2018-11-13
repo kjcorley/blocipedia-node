@@ -20,9 +20,16 @@
                     <p class="card-text">Create Public Wikis</p>
                     <p class="card-text">Edit Public Wikis</p>
                     <% if(currentUser && (currentUser.role == "premium")) { %>
-                        <form style="display: initial" action="/users/downgrade" method="POST">
-                            <button type="submit" class="btn btn-warning">Downgrade</button>
-                        </form>
+                            <button type="submit" class="btn btn-warning" onclick="confirmDowngrade()">Downgrade</button>
+                            <script>
+                                function confirmDowngrade() {
+                                    var confirmation = confirm("All private wikis will become public. Are you sure you want to downgrade?");
+                                    if(confirmation) {
+                                        $.post("/users/downgrade");
+                                        location.reload();
+                                    };
+                                }
+                            </script>
                     <% } %>
                 </section>
                 

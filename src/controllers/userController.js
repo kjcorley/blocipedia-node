@@ -1,4 +1,5 @@
 const userQueries = require("../db/queries.users.js");
+const wikiQueries = require("../db/queries.wikis.js");
 const passport = require("passport");
 const emailRelay = require("../email/helper.js");
 const stripe = require("stripe")(process.env.STRIPE_SK);
@@ -73,8 +74,15 @@ module.exports = {
             if(err) {
                 req.flash("error", err)
             } else {
-                req.flash("notice", "Your account has been downgraded to standard!");
-                res.redirect(req.headers.referer);
+                wikiQueries.downgradeWikis(req.user.id, (err) => {
+                    if(err) {
+                        req.flash("error", err);
+                        res.redirect(req.headers.referer);
+                    } else {
+                        req.flash("notice", "Your account has been downgraded to standard!");
+                        res.redirect(req.headers.referer);
+                    }
+                })
             }
         })
     },
