@@ -16,7 +16,7 @@
                 <button type="submit" class="btn btn-danger">Delete</button>
             </form>
             <% } %>
-            <p><%= wiki.body %></p>
+            <section><%- bodyMarkdown %></section>
         </main>
         <% include ../static/partials/baseScripts.ejs %>
     </body>
